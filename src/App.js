@@ -5,16 +5,19 @@ import { useState } from 'react';
 function App() {
 
   let post = '도토리도굴단';
-  let [title,set_title] = useState(['햄스토리','햄파이어','햄파이트']);
-  let [like,set_like] = useState(0);
+  let [title,setTitle] = useState(['햄스토리','햄파이어','햄파이트']);
+  let [likes,setLikes] = useState([0,20,30]);
+  let [modal,setModal] = useState(false);
   
-  function likeUp(){
-    set_like(like+1);
+  function likeUp(i){
+    let copy = [...likes];
+    copy[i] = copy[i]+1;
+    setLikes(copy);
   }
   function hw(){
     let copy = [...title];
     copy[0] = '햄스토리 짱';
-    set_title(copy);
+    setTitle(copy);
   }
   function sort(){
     let copy = [...title];
@@ -27,7 +30,7 @@ function App() {
         }
       }
     }
-    set_title(copy);
+    setTitle(copy);
   }
 
   return (
@@ -36,22 +39,40 @@ function App() {
         <h4 style = {{color : 'White' , fontSize : '30px'}}>React Study Blog</h4>
       </div>
       <button onClick={sort}>가나다순 정렬</button>
-      <div className="list">
-        <h4>{title[0]} <span onClick={likeUp}>❤️</span> {like} </h4>
-        <p>240801</p>
-      </div>
-      <div className="list">
-        <h4>{title[1]}</h4>
-        <p>240801</p>
-      </div>
-      <div className="list">
-        <h4>{title[2]}</h4>
-        <p>240801</p>
-      </div>
+
+      {
+        title.map(function(name,i){
+          return (
+          <div className="list">
+            <h4 onClick={()=>{setModal(!modal)}}>{name} <span onClick={()=>likeUp(i)}>❤️</span> {likes[i]} </h4>
+            <p>240801</p>
+          </div>
+          )
+        })
+      }
+
+
+
       <h4><span onClick={hw}>{post}</span></h4>
+
+      
+      {
+        modal ? <Modal/> : null
+      }
       
     </div>
   );
 }
+
+function Modal(){
+  return (
+    <div className='modal'>
+        <h4>제목</h4>
+        <p>날짜</p>
+        <p>상세내용</p>
+      </div>
+  )
+}
+
 
 export default App;
