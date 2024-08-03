@@ -4,10 +4,11 @@ import { useState } from 'react';
 
 function App() {
 
-  let post = '도토리도굴단';
   let [title,setTitle] = useState(['햄스토리','햄파이어','햄파이트']);
-  let [likes,setLikes] = useState([0,20,30]);
+  let [likes,setLikes] = useState([0,0,0]);
   let [modal,setModal] = useState(false);
+  let [modalTitle,setModalTitle] = useState("제목");
+  let [inputValue,setInputValue] = useState('도토리도굴단');
   
   function likeUp(i){
     let copy = [...likes];
@@ -32,6 +33,27 @@ function App() {
     }
     setTitle(copy);
   }
+  function addList(listName){
+    let copy = [...title];
+    copy.push(listName);
+    setTitle(copy);
+
+    copy = [...likes];
+    copy.push(0);
+    setLikes(copy);
+  }
+
+  function delList(listNum){
+    let copy = [...title];
+    copy.splice(listNum,1);
+    setTitle(copy);
+
+
+    copy = [...likes];
+    copy.splice(listNum,1);
+    setLikes(copy);
+  }
+
 
   return (
     <div className="App">
@@ -44,7 +66,9 @@ function App() {
         title.map(function(name,i){
           return (
           <div className="list">
-            <h4 onClick={()=>{setModal(!modal)}}>{name} <span onClick={()=>likeUp(i)}>❤️</span> {likes[i]} </h4>
+            <h4 onClick={()=>{setModal(!modal); setModalTitle(title[i])}}>
+              {name} <span onClick={(e)=> {e.stopPropagation(); likeUp(i)}}>❤️</span> {likes[i]} <button onClick={(e)=>{e.stopPropagation();delList(i)}}>삭제</button>
+              </h4>
             <p>240801</p>
           </div>
           )
@@ -52,12 +76,16 @@ function App() {
       }
 
 
+      <h4><span onClick={hw}>{inputValue}</span></h4>
 
-      <h4><span onClick={hw}>{post}</span></h4>
-
+      <div>
+        <input onChange={(e)=>{setInputValue(e.target.value)}}></input>
+        <button onClick={()=>addList(inputValue)}>생성</button>
+      </div>
+      
       
       {
-        modal ? <Modal color={'skyBlue'} title={title} change ={hw}/> : null
+        modal ? <Modal color={'skyBlue'} modalTitle ={modalTitle} change ={hw}/> : null
       }
       
     </div>
@@ -67,7 +95,7 @@ function App() {
 function Modal(props){
   return (
     <div className='modal' style={{background:props.color}}>
-        <h4>{props.title[0]}</h4>
+        <h4>{props.modalTitle}</h4>
         <p>날짜</p>
         <p>상세내용</p>
         <button onClick={props.change}>글수정</button>
